@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #task-input {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        #task-input input {
+            width: 300px;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        #task-input button {
+            padding: 10px 20px;
+            margin-left: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            background: #fff;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        li .delete {
+            color: #ff0000;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Team Dashboard</h1>
+        <div id="task-input">
+            <input type="text" id="task" placeholder="Enter new task">
+            <button onclick="addTask()">Add Task</button>
+        </div>
+        <ul id="task-list"></ul>
+    </div>
+    <script>
+        let tasks = [];
+
+        async function pushTaskToGitHub(task) {
+            const githubToken = 'YOUR_GITHUB_TOKEN';
+            const repoName = 'Sreevani-ux/Uptoskills.team2';
+            const filePath = 'tasks.txt';
+
+            try {
+                const response = await fetch('/push-task', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ task, githubToken, repoName, filePath })
+                });
+
+                if (response.ok) {
+                    alert('Task pushed to GitHub');
+                } else {
+                    alert('Error pushing task to GitHub');
+                }
+            } catch (error) {
+                alert('Error pushing task to GitHub');
+            }
+        }
+
+        function addTask() {
+            const taskInput = document.getElementById('task');
+            const task = taskInput.value.trim();
+
+            if (task) {
+                tasks.push(task);
+                taskInput.value = '';
+                displayTasks();
+                pushTaskToGitHub(task);
+            }
+        }
+
+        function displayTasks() {
+            const taskList = document.getElementById('task-list');
+            taskList.innerHTML = '';
+
+            tasks.forEach((task, index) => {
+                const li = document.createElement('li');
+                li.textContent = task;
+
+                const deleteBtn = document.createElement('span');
+                deleteBtn.textContent = 'Delete';
+                deleteBtn.classList.add('delete');
+                deleteBtn.onclick = () => {
+                    deleteTask(index);
+                };
+
+                li.appendChild(deleteBtn);
+                taskList.appendChild(li);
+            });
+        }
+
+        function deleteTask(index) {
+            tasks.splice(index, 1);
+            displayTasks();
+        }
+    </script>
+</body>
+</html>
