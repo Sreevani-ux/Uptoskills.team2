@@ -77,7 +77,6 @@
         let tasks = [];
 
         async function pushTaskToGitHub(task) {
-            const githubToken = 'YOUR_GITHUB_TOKEN';
             const repoName = 'Sreevani-ux/Uptoskills.team2';
             const filePath = 'tasks.txt';
 
@@ -87,7 +86,7 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ task, githubToken, repoName, filePath })
+                    body: JSON.stringify({ task, repoName, filePath })
                 });
 
                 if (response.ok) {
